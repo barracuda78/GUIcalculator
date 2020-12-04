@@ -339,7 +339,7 @@ public class Calculator {
 
 
         //проверка, что выражение валидно. Если не валидно - вернуть... null? или что-то еще?
-        if(!validityCheck(statement)) return null;
+        if(!validityCheck(statement)) return "неверное выражение";
 
         //получить лист токенов:
         List<Object> listOfTokens = stringToTokens(statement);
