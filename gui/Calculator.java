@@ -63,13 +63,12 @@ public class Calculator {
             return false;
         }
 
-        //if we have "(" in the statement: check if there are parenthesis, there should be correct substatement within (containing at least 2 numbers with one +-*/ sign in between;.
-        //doesn't work properly: can find last correct statement and return true; Before that can be uncorrect statements;
-        //String statement = "-1.0+((5/8*9)-(44+5.55555)/888.888)-(0.33+)";
-        //avoid this situation^ (0.33+)
-        //avoid this situation^ (0.33)
-        //permit situation (-1.033)
-
+        //если у нас есть " ("в выражении: проверьте, есть ли скобки, внутри них должна быть правильная подстановка (содержащая по крайней мере 2 числа с одним знаком +-*/ между ними;.
+        //не работает должным образом: может найти последнее правильное утверждение и вернуть true; до этого могут быть неправильные утверждения;
+        // String statement = "-1.0+((5/8*9)-(44+5.55555)/888.888)-(0.33+)";
+        // избегаю этой ситуации^ (0.33+)
+        // избегаю этой ситуации^ (0.33)
+        // разрешить такую ситуацию (-1.033)
         if(statement.contains("(")){
             boolean correctStatementWithinParenthesis = false;
             boolean correctStatementWithinParenthesis1 = false;
@@ -81,12 +80,12 @@ public class Calculator {
             while(m4.find()){
                 correctStatementWithinParenthesis = true;
             }
-            //avoid this situation: (0.33)
-            //avoid this situation: (0.33+)
-            //avoid this situation: (+0.33)
-            //avoid this situation: (*0.33)
-            //avoid this situation: (/0.33)
-            //permit situation (-1.033)
+            //избегаю этой ситуации: (0.33)
+            //избегаю этой ситуации: (0.33+)
+            //избегаю этой ситуации: (+0.33)
+            //избегаю этой ситуации: (*0.33)
+            //избегаю этой ситуации: (/0.33)
+            //разрешаю: (-1.033)
             Pattern p42 = Pattern.compile("\\([\\+\\*\\/]*\\d+(\\.\\d+)?[\\+\\-\\*\\/]*\\)");
             Matcher m42 = p42.matcher(statement);
             while(m42.find()){
@@ -96,22 +95,22 @@ public class Calculator {
             if(!correctStatementWithinParenthesis) return false;
         }
 
-        //check that we don't have several signs of +-*/ or . going together:
+        //проверка что у нас нет несколько знаков +-*/ или . идущих подряд:
         Pattern p5 = Pattern.compile("[\\+\\-\\*\\/\\.]{2,}");
         Matcher m5 = p5.matcher(statement);
         if(m5.find()){
             return false;
         }
 
-        //check if we do not have the situation: 24.555.43
+        //проверка что нет такой ситуации: 24.555.43
         Pattern p6 = Pattern.compile("\\d*\\.\\d*\\.");
         Matcher m6 = p6.matcher(statement);
         if(m6.find()){
             return false;
         }
 
-        //check : only digits can be around the dot.
-        //Doesn't work correct. Corrected in later logic of this method.
+        //проверка: что только цифры могут быть рядом с точкой с двух сторон.
+        //не работает корректно. Корректен вариант далее в этом методе...
         if(statement.contains(".")){
             Pattern p7 = Pattern.compile("\\d\\.\\d");
             Matcher m7 = p7.matcher(statement);
@@ -121,13 +120,13 @@ public class Calculator {
         }
 
 
-        //check if . or / or * isn't the first sign in the statement:
+        //проверка что . или / или * не являются первыми знаками в выражении:
         if(statement.charAt(0) == '.' || statement.charAt(0) == '*' || statement.charAt(0) == '/' ){
             return false;
         }
 
-        //check if ( and ) create correct pairs. Avoid situation: (   )  ) ( (   )
-        //counter of opening ( never can be less than 0
+        //проверка что скобка такая  ( и такая  ) создают корректные пары. избегаю ситуации:  (   )  ) ( (   )
+        //счетчик открывающих скобок не может быть меншье нуля (
         String onlyParenthesis = statement.replaceAll("[^\\(\\)]", "");
         int counter = 0;
         char[] cArray = statement.toCharArray();
@@ -142,33 +141,29 @@ public class Calculator {
             }
         }
 
-        //avoid this situation: 1(  together or )55 together:
+        //избегаю ситуации 1(  стоят вместе или  )55 стоят вместе:
         Pattern p8 = Pattern.compile("(\\)\\d|\\d\\()");
         Matcher m8 = p8.matcher(statement);
         if(m8.find()){
             return false;
         }
 
-        //avoid this situation: .(  together or ). together:
+        //избегаю ситуации: .( точка и скобка вместе или  ). вместе:
         Pattern p9 = Pattern.compile("(\\)\\.|\\.\\()");
         Matcher m9 = p9.matcher(statement);
         if(m9.find()){
             return false;
         }
 
-        //avoid this situation^ (0.33+)
-        //avoid this situation^ (0.33)
-
-
-
         return true;
     }
 
-    //this method splits the given statement to tokens:
+    //Этот метод разделяет входную строку (выражение) на токены:
     private static List<Object> stringToTokens(String statement){
-        //create map for numbers and put here all the numbers from the String statement
+        //создаю мапу цифр и помещаю в нее все цифры из входной строки:
         Map<Integer, Object> mapOfNumbers= new HashMap<>();
         //add to the pattern minus sign when not a beginning of the line and not after (
+        //добавить паттерну знак минус если не начало линии и не после скобки.
         Pattern p = Pattern.compile("\\d+(\\.\\d+)?");
         Matcher m = p.matcher(statement);
         while(m.find()){
@@ -176,7 +171,8 @@ public class Calculator {
             mapOfNumbers.put(m.start(), bigDecimal);
         }
         //////////////////////////////////////////
-        //create map for the signs and put all the signs into this map.
+
+        //создаю мапу знаком и все знаки складываю в нее.
         Map<Integer, Object> mapOfSigns = new HashMap<>();
         Pattern p2 = Pattern.compile("[\\(\\)\\+\\-\\*\\/]");
         Matcher m2 = p2.matcher(statement);
@@ -184,22 +180,22 @@ public class Calculator {
             mapOfSigns.put(m2.start(), m2.group());
         }
         /////////////////////////////////////////////
-        //unite all pair within one map
+        //объединяю эти две мапы в одну:
         mapOfNumbers.putAll(mapOfSigns);
         /////////////////////////////////////////////
-        //create list based on this common map
+        //создаю List основанный на этой общей мапе
         List<Object> listOfTokens = new ArrayList<>();
         for(int i = 0; i < statement.length(); i++){
             if(mapOfNumbers.containsKey(i)) {
                 listOfTokens.add(mapOfNumbers.get(i));
             }
             else{
-                listOfTokens.add("?");
+                listOfTokens.add("?"); //<---фейковый токен
             }
         }
         ////////////////////////////////////////////
-        //delete fake tokens ("?") from list
 
+        //удаляю фейковые токены ("?") из листа
         for(int i = 0; i < listOfTokens.size(); i++){
             if(listOfTokens.get(i) instanceof String) {
                 if (((String) listOfTokens.get(i)).equals("?")) {
@@ -209,7 +205,7 @@ public class Calculator {
             }
         }
 
-        //solve "minus sign problem" when minus goes in the beginning of the statement:
+        //решаю "проблему знака минус"- когда минус идет в начале выражения.:
         //"-1.5+1.2+(-1)"
 
         for(int i = 0; i < listOfTokens.size(); i++) {
@@ -217,7 +213,7 @@ public class Calculator {
                 if (((String) listOfTokens.get(0)).equals("-")) {
                     listOfTokens.remove(0);
                     i--;
-                    //next number multiply by -1;
+                    //следующее число умножаю на -1;
                     if(listOfTokens.get(i+1) instanceof BigDecimal){
                         BigDecimal b = (BigDecimal)listOfTokens.get(i+1);
                         listOfTokens.set(i+1, b.multiply(new BigDecimal(-1)));
@@ -227,7 +223,8 @@ public class Calculator {
             }
         }
 
-        //adapt list to the problem when the minus goes immediately after parenthesis:
+
+        //адаптирую лист к проблеме, когда минус идет непосредственно после скобок:
         for(int i = 0; i < listOfTokens.size(); i++) {
             if (listOfTokens.get(i) instanceof String) {
                 if (((String) listOfTokens.get(i)).equals("(")) {
@@ -237,7 +234,8 @@ public class Calculator {
                             //delete this object of minus from list
                             listOfTokens.remove(i + 1);
                             i--;
-                            //next number multiply by -1;
+
+                            //следующее число множаю на -1
                             if (listOfTokens.get(i + 2) instanceof BigDecimal) {
                                 BigDecimal b = (BigDecimal) listOfTokens.get(i + 2);
                                 listOfTokens.set(i + 2, b.multiply(new BigDecimal(-1)));
@@ -253,6 +251,7 @@ public class Calculator {
     }
 
     //this method calculates single action: pop sign, pop two numbers, calculate them and push the result to the stackOfBigDecimals.
+    //этот метод делает одно маленькое математическое вычисление: забирает знак, два числа, выполняет действие, ответ складывает в стек с числами.
     private void doAction(){
         String upperSign = stackOfSigns.pop();
         BigDecimal last = stackOfBigDecimals.pop();
@@ -273,7 +272,8 @@ public class Calculator {
         }
     }
 
-    //this method is used when the end of the statement is reached during the iteration for the last action with the rest of stacks.
+
+    //этот метод используется когда достигается конец выражения во время итерации - как последнее действие с остатками стеков:
     private BigDecimal doLastAction(){
         BigDecimal answer = new BigDecimal(0);
         String upperSign = stackOfSigns.pop();
@@ -296,7 +296,8 @@ public class Calculator {
         return answer;
     }
 
-    //this recursive method is for actions within the parenthesis:
+
+    //этот рекурсивный метод для действий со скобками:
     //(2+2)
     private void recursive1(String sign){
         if(stackOfSigns.empty()){
@@ -313,7 +314,8 @@ public class Calculator {
         }
     }
 
-    //this recursive method is used for priorities of actions;
+
+    //этот рекурсивный метод - для приоритета действий.
     private void recursive2(String sign){
         if(stackOfSigns.empty()){
             stackOfSigns.push(sign);
@@ -332,22 +334,19 @@ public class Calculator {
         }
     }
 
+    //главный метод класса - открытый интерфейс.
     public String evaluate(String statement) {
-        // TODO: Implement the logic here
-        //01. Check if string is valid. Use regex. Return null if not valid.
+
+
+        //проверка, что выражение валидно. Если не валидно - вернуть... null? или что-то еще?
         if(!validityCheck(statement)) return null;
-        //02. Parse the string. ---> DONE via stringToTokens(String statement);
-        //03. Use BigDecimal class to calculate --->DONE;
-        //04. Round the result ---> DONE;
-        //05. convert result to the String and return it. ---> DONE;
 
-
-        //getting list of tokens:
+        //получить лист токенов:
         List<Object> listOfTokens = stringToTokens(statement);
 
-        //iterating through the listOfTokens:
+        //итерация по листу токенов:
         for(int i = 0; i < listOfTokens.size(); i++){
-//            /////////////////////CHECK///////////////////
+//            /////////////////////проверочка///////////////////
 //            System.out.println(i + "-я итерация:");
 //            System.out.println("Содержимое стека с числами: ");
 //            for(BigDecimal b : stackOfBigDecimals){
@@ -359,30 +358,32 @@ public class Calculator {
 //                System.out.println(s);
 //            }
 //            System.out.println("--------------------------------------------------");
-//            ///////////////END OF CHECK///////////////////
+//            ///////////////конец проверки///////////////////
             if(listOfTokens.get(i) instanceof String){
                 String sign = (String)listOfTokens.get(i);
-                //if stackOfSigns is empty, ---> push this listOfTokens.get(i) to the stackOfSigns.
+
+                //если stackOfSigns пустой ---> push этот listOfTokens.get(i)в stackOfSigns.
                 if(stackOfSigns.size() == 0){
                     stackOfSigns.push(sign);
                 }
-                //if stackOfSigns is not empty,
-                //if sign  == "(" -------> push this sign to the stackOfSigns
+                //если stackOfSigns не  пустой,
+                //если sign  == "(" -------> push этот sign в stackOfSigns
+
                 else if(sign.equals("(")){
                     stackOfSigns.push(sign);
                 }
-                //if sign  == ")"  ------->
+                //если sign  == ")"  ------->
                 else if(sign.equals(")")){
-                    //if lhe last item in stackOfSign is "(" - we should pop this "(" from stack.
+                    //если последний элемент в stackOfSign является "(" - нужно его pop  "(" из стека.
                     recursive1(sign);
                 }
-                //if sign in the statement == "*" or "/", and stackOfSigns.peek() == "+" or "-"   --->
-                //push this sign to the stackOfSigns
+                //если sign в выражении == "*" или "/", и stackOfSigns.peek() == "+" или "-"   --->
+                //push этот sign в stackOfSigns
                 else if(sign.equals("+") || sign.equals("-") || sign.equals("*") || sign.equals("/")){
                     recursive2(sign);
                 }
             }else if(listOfTokens.get(i) instanceof BigDecimal){
-                //if number ---> push it to the stackOfDoubles.
+                //если цифра  ---> пушнуть ее в  stackOfDoubles.
                 BigDecimal d = (BigDecimal) listOfTokens.get(i);
                 stackOfBigDecimals.push(d);
 
@@ -390,7 +391,7 @@ public class Calculator {
 
         }
 
-        //FINAL ACTION IN THE SEPARATE LOGIC HERE:
+        //финальное действие в отдельной логике вот здесь::
         while(!stackOfSigns.empty()){
             doAction();
         }
@@ -404,7 +405,7 @@ public class Calculator {
         }
 
 
-//        /////////////////////CHECK///////////////////
+//        /////////////////////проверка///////////////////
 //        System.out.println("ФИНАЛ - Содержимое стека с числами: ");
 //        for(BigDecimal b : stackOfBigDecimals){
 //            System.out.println(b.toString());
@@ -413,17 +414,18 @@ public class Calculator {
 //        for(String s : stackOfSigns){
 //            System.out.println(s);
 //        }
-//        ///////////////END OF CHECK///////////////////
+//        ///////////////конец проверки///////////////////
 
 
-        //DO NOT FORGET TO ROUND THE ANSWER
-        //Rounding is to be performed to 4 significant digits, only the final result is to be rounded. Example: 102.12356 -> 102.1236
+        //НЕ ЗАБЫТЬ ОКРУГЛИТЬ ОТВЕТ
+
+        //Округление делаю до 4 значящих цифр, округляю только конечный результат. Пример: 102.12356 -> 102.1236
         answer = answer.setScale(4, RoundingMode.HALF_UP);
 
         return answer.toString();
     }
 
-
+//финальная проверка:
 //    public static void main(String[] args) {
 //        Calculator c = new Calculator();
 //        String answer = c.evaluate("3+2=");
