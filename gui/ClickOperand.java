@@ -17,7 +17,7 @@ public class ClickOperand implements ActionListener {
         ResultCommand.setExpression(exp);
 
         String oldValue = CalcWindow.display.getText();
-        if(oldValue != null && oldValue.equals("0")){
+        if(oldValue != null && oldValue.equals("0")|| oldValue != null && oldValue.equals("неверное выражение")){
             CalcWindow.display.setText(command);
         }else{
             CalcWindow.display.setText(oldValue + command);

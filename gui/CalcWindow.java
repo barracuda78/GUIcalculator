@@ -15,7 +15,7 @@ public class CalcWindow extends JFrame {
         window = this;
         setTitle("Calculator");
         setSize(new Dimension(WIDTH, HEIGHT));
-        this.setResizable(false);
+        this.setResizable(true);
 
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setLocationRelativeTo(null);//по центру
@@ -23,14 +23,14 @@ public class CalcWindow extends JFrame {
         display = new JLabel("0", JLabel.RIGHT);
         display.setPreferredSize(new Dimension(this.getWidth(), 70));
         display.setFont(new Font("Arial", Font.BOLD, 36));
-        display.setBorder(BorderFactory.createEmptyBorder(10, 10, 0,10));
+        display.setBorder(BorderFactory.createEmptyBorder(4, 4, 0,4));
         //менеджер компоновки:
         this.setLayout(new BorderLayout());
         //можно просто добавлять, не в ContentPane
         this.add(display, BorderLayout.NORTH);
 
         buttonPanel = new JPanel(new GridLayout(5,4,10,10)); //GridLayout - это менеджер компоновки
-        buttonPanel.setBorder(BorderFactory.createMatteBorder(10,10,0,10, Color.LIGHT_GRAY));
+        buttonPanel.setBorder(BorderFactory.createMatteBorder(4,4,0,4, Color.LIGHT_GRAY));
 
         ActionListener clickCommand = new ClickCommand();
         ActionListener clickOperand = new ClickOperand();
@@ -69,7 +69,7 @@ public class CalcWindow extends JFrame {
         resultButton.setFont((new Font("Arial", Font.PLAIN, 20)));
         resultButton.addActionListener(resultCommand);
         resultButton.setPreferredSize(new Dimension(this.getWidth(), 70));
-        resultButton.setBorder(BorderFactory.createMatteBorder(10,10,10,10, Color.ORANGE));
+        resultButton.setBorder(BorderFactory.createMatteBorder(4,4,4,4, Color.lightGray));
         this.add(resultButton, BorderLayout.SOUTH);//можно просто добавлять, не в ContentPane
 
         setVisible(true);

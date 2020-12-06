@@ -1,5 +1,8 @@
 package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,6 +19,11 @@ public class ResultCommand implements ActionListener {
         String answer = cl.evaluate(expression.toString());
         //check to console:
         //System.out.println("Result of the statement is: " + answer);
+
+        //Записать ответ в буфер обмена:
+        StringSelection stringSelection = new StringSelection(answer);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
 
         //забрать из него ответ и засунуть сюда:
         CalcWindow.display.setText(answer);
