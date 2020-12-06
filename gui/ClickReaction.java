@@ -23,6 +23,13 @@ public class ClickReaction implements ActionListener {
                 break;
             case "Color Picker":
                 System.out.println("Нажат Color Picker");
+                SwingUtilities.invokeLater(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        ColorPickerWindow.getInstance();
+                    }
+                });
                 break;
         }
     }

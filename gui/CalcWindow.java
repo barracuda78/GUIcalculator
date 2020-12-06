@@ -5,10 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class CalcWindow extends JFrame {
-    public static CalcWindow window = null;
+    public static CalcWindow window;
     final int WIDTH = 300;
     final int HEIGHT = 450;
-    public static JLabel display = null;
+    public static JLabel display;
     private static JPanel buttonPanel;  // отдельно панель с кнопками.
 
     private CalcWindow(){
@@ -20,7 +20,7 @@ public class CalcWindow extends JFrame {
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setLocationRelativeTo(null);//по центру
 
-        display =new JLabel("0", JLabel.RIGHT);
+        display = new JLabel("0", JLabel.RIGHT);
         display.setPreferredSize(new Dimension(this.getWidth(), 70));
         display.setFont(new Font("Arial", Font.BOLD, 36));
         display.setBorder(BorderFactory.createEmptyBorder(10, 10, 0,10));
@@ -63,10 +63,7 @@ public class CalcWindow extends JFrame {
         addButton("\u2190", backspaceCommand);
         addButton("CE", CECommand);
 
-
         this.add(buttonPanel, BorderLayout.CENTER);//можно просто добавлять, не в ContentPane
-
-        //setVisible(true);
 
         JButton resultButton = new JButton("=");
         resultButton.setFont((new Font("Arial", Font.PLAIN, 20)));
