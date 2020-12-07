@@ -1,4 +1,6 @@
-package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
+package com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.gui;
+
+import com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.calculations_logic.Calculator;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

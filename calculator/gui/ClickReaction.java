@@ -1,4 +1,6 @@
-package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
+package com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.gui;
+
+import com.barracuda.tasks.politeh.practice_04_12_2020.calc.colors.gui.ColorPickerWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
