@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Calculator {
+    private boolean divideByZero;
     //Создаю стек для всех цифр в переданной строке:
     private Stack<BigDecimal> stackOfBigDecimals = new Stack<>();
     //Создаю второй стек для всех знаков типа ( ) + - * /
@@ -259,17 +260,25 @@ public class Calculator {
         if(upperSign.equals("*")){
             BigDecimal result = preLast.multiply(last);
             stackOfBigDecimals.push(result);
+
         }
         else if(upperSign.equals("/")){
-            BigDecimal result = preLast.divide(last, RoundingMode.HALF_UP);
-            stackOfBigDecimals.push(result);
+            try {
+                BigDecimal result = preLast.divide(last, RoundingMode.HALF_UP);
+                stackOfBigDecimals.push(result);
+            }catch(ArithmeticException a){
+                divideByZero = true;
+            }
         }else if(upperSign.equals("+")){
             BigDecimal result = preLast.add(last);
             stackOfBigDecimals.push(result);
+
         }else if(upperSign.equals("-")){
             BigDecimal result = preLast.subtract(last);
             stackOfBigDecimals.push(result);
+
         }
+
     }
 
 
@@ -284,8 +293,13 @@ public class Calculator {
             answer = stackOfBigDecimals.push(result);
         }
         else if(upperSign.equals("/")){
-            BigDecimal result = preLast.divide(last, RoundingMode.HALF_UP);
-            answer = stackOfBigDecimals.push(result);
+            try {
+                BigDecimal result = preLast.divide(last, RoundingMode.HALF_UP);
+                answer = stackOfBigDecimals.push(result);
+            }catch(ArithmeticException a){
+                divideByZero = true;
+            }
+
         }else if(upperSign.equals("+")){
             BigDecimal result = preLast.add(last);
             answer = stackOfBigDecimals.push(result);
@@ -309,7 +323,11 @@ public class Calculator {
             stackOfSigns.pop();
         }
         else if(upperSign.equals("+") || upperSign.equals("-") || upperSign.equals("*") || upperSign.equals("/")){
+
             doAction();
+            if(divideByZero){
+                return;
+            }
             recursive1(sign);
         }
     }
@@ -330,6 +348,9 @@ public class Calculator {
         }
         else if(priorities.containsKey(sign) && priorities.containsKey(upperSign) && priorities.get(upperSign) >= priorities.get(sign)){
             doAction();
+            if(divideByZero){
+                return;
+            }
             recursive2(sign);
         }
     }
@@ -337,15 +358,15 @@ public class Calculator {
     //главный метод класса - открытый интерфейс.
     public String evaluate(String statement) {
 
+        try {
+            //проверка, что выражение валидно. Если не валидно - вернуть... null? или что-то еще?
+            if (!validityCheck(statement)) return "неверное выражение";
 
-        //проверка, что выражение валидно. Если не валидно - вернуть... null? или что-то еще?
-        if(!validityCheck(statement)) return "неверное выражение";
+            //получить лист токенов:
+            List<Object> listOfTokens = stringToTokens(statement);
 
-        //получить лист токенов:
-        List<Object> listOfTokens = stringToTokens(statement);
-
-        //итерация по листу токенов:
-        for(int i = 0; i < listOfTokens.size(); i++){
+            //итерация по листу токенов:
+            for (int i = 0; i < listOfTokens.size(); i++) {
 //            /////////////////////проверочка///////////////////
 //            System.out.println(i + "-я итерация:");
 //            System.out.println("Содержимое стека с числами: ");
@@ -359,50 +380,52 @@ public class Calculator {
 //            }
 //            System.out.println("--------------------------------------------------");
 //            ///////////////конец проверки///////////////////
-            if(listOfTokens.get(i) instanceof String){
-                String sign = (String)listOfTokens.get(i);
+                if (listOfTokens.get(i) instanceof String) {
+                    String sign = (String) listOfTokens.get(i);
 
-                //если stackOfSigns пустой ---> push этот listOfTokens.get(i)в stackOfSigns.
-                if(stackOfSigns.size() == 0){
-                    stackOfSigns.push(sign);
-                }
-                //если stackOfSigns не  пустой,
-                //если sign  == "(" -------> push этот sign в stackOfSigns
+                    //если stackOfSigns пустой ---> push этот listOfTokens.get(i)в stackOfSigns.
+                    if (stackOfSigns.size() == 0) {
+                        stackOfSigns.push(sign);
+                    }
+                    //если stackOfSigns не  пустой,
+                    //если sign  == "(" -------> push этот sign в stackOfSigns
 
-                else if(sign.equals("(")){
-                    stackOfSigns.push(sign);
+                    else if (sign.equals("(")) {
+                        stackOfSigns.push(sign);
+                    }
+                    //если sign  == ")"  ------->
+                    else if (sign.equals(")")) {
+                        //если последний элемент в stackOfSign является "(" - нужно его pop  "(" из стека.
+                        recursive1(sign);
+                    }
+                    //если sign в выражении == "*" или "/", и stackOfSigns.peek() == "+" или "-"   --->
+                    //push этот sign в stackOfSigns
+                    else if (sign.equals("+") || sign.equals("-") || sign.equals("*") || sign.equals("/")) {
+                        recursive2(sign);
+                    }
+                } else if (listOfTokens.get(i) instanceof BigDecimal) {
+                    //если цифра  ---> пушнуть ее в  stackOfDoubles.
+                    BigDecimal d = (BigDecimal) listOfTokens.get(i);
+                    stackOfBigDecimals.push(d);
+
                 }
-                //если sign  == ")"  ------->
-                else if(sign.equals(")")){
-                    //если последний элемент в stackOfSign является "(" - нужно его pop  "(" из стека.
-                    recursive1(sign);
-                }
-                //если sign в выражении == "*" или "/", и stackOfSigns.peek() == "+" или "-"   --->
-                //push этот sign в stackOfSigns
-                else if(sign.equals("+") || sign.equals("-") || sign.equals("*") || sign.equals("/")){
-                    recursive2(sign);
-                }
-            }else if(listOfTokens.get(i) instanceof BigDecimal){
-                //если цифра  ---> пушнуть ее в  stackOfDoubles.
-                BigDecimal d = (BigDecimal) listOfTokens.get(i);
-                stackOfBigDecimals.push(d);
 
             }
 
-        }
+            //финальное действие в отдельной логике вот здесь::
+            while (!stackOfSigns.empty()) {
+                doAction();
+                if(divideByZero){
+                    return "деление на ноль...";
+                }
+            }
 
-        //финальное действие в отдельной логике вот здесь::
-        while(!stackOfSigns.empty()){
-            doAction();
-        }
-
-        BigDecimal answer = new BigDecimal(0);
-        if(stackOfSigns.size() == 1 && stackOfBigDecimals.size() == 2){
-            answer = doLastAction();
-        }
-        else if(stackOfSigns.empty() && stackOfBigDecimals.size() == 1){
-            answer = stackOfBigDecimals.pop();
-        }
+            BigDecimal answer = new BigDecimal(0);
+            if (stackOfSigns.size() == 1 && stackOfBigDecimals.size() == 2) {
+                answer = doLastAction();
+            } else if (stackOfSigns.empty() && stackOfBigDecimals.size() == 1) {
+                answer = stackOfBigDecimals.pop();
+            }
 
 
 //        /////////////////////проверка///////////////////
@@ -417,12 +440,16 @@ public class Calculator {
 //        ///////////////конец проверки///////////////////
 
 
-        //НЕ ЗАБЫТЬ ОКРУГЛИТЬ ОТВЕТ
+            //НЕ ЗАБЫТЬ ОКРУГЛИТЬ ОТВЕТ
 
-        //Округление делаю до 4 значящих цифр, округляю только конечный результат. Пример: 102.12356 -> 102.1236
-        answer = answer.setScale(4, RoundingMode.HALF_UP);
+            //Округление делаю до 4 значящих цифр, округляю только конечный результат. Пример: 102.12356 -> 102.1236
+            answer = answer.setScale(4, RoundingMode.HALF_UP);
 
-        return answer.toString();
+            return divideByZero? "деление на ноль" : answer.toString();
+
+        }catch(ArithmeticException n){
+            return "деление на ноль!";
+        }
     }
 
 //финальная проверка:
