@@ -13,6 +13,12 @@ public class ColorPickerWindow extends JFrame {
 
     private JPanel colorSquare;
     private Color defaultColor;
+    public int red;
+    public int green;
+    public int blue;
+    public int alpha;
+
+
     private String toolTipText;
     //private static JPanel colorPanel;
     private JPanel sliderPanel;
@@ -25,12 +31,19 @@ public class ColorPickerWindow extends JFrame {
 
 
     private ColorPickerWindow(){
+
         if(defaultColor == null){
-            defaultColor = new Color(125, 125, 125, 255);//прозрачность поменять на абсолютно непрозрачную!
+            red = 125;
+            green = 125;
+            blue = 125;
+            alpha = 255;
+            defaultColor = new Color(red, green, blue, alpha);//прозрачность поменять на абсолютно непрозрачную!
         }
+
         if (toolTipText == null) {
             toolTipText = "";
         }
+
         init();
     }
 
@@ -125,14 +138,6 @@ public class ColorPickerWindow extends JFrame {
         instance.setVisible(true);
         return instance;
     }
-
-//    public static JPanel getColorPanel() {
-//        return colorPanel;
-//    }
-
-//    public static void setColorPanel(JPanel colorPanel) {
-//        ColorPickerWindow.colorPanel = colorPanel;
-//    }
 
 
     public JPanel getColorSquare() {

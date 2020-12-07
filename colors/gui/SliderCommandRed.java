@@ -19,7 +19,7 @@ public class SliderCommandRed implements ChangeListener {
         int oldAlpha = oldColor.getAlpha();
 
         Color newColor = new Color(newRedValue, oldGreenValue, oldBlueValue, oldAlpha);
-        //instance.setDefaultColor(newColor);
+        instance.setDefaultColor(newColor);
         colorSquare.setBackground(newColor);
         //instance.setColorSquare(new JPanel(new FlowLayout()));
         //System.out.println("slider 01 ChangeListener...value = " + newColor.toString()); //----------->закомментить. Это для теста.
