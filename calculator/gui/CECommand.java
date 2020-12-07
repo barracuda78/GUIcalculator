@@ -1,4 +1,4 @@
-package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
+package com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

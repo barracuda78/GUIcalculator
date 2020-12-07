@@ -1,12 +1,14 @@
-package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
+package com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.gui;
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ClickCommand implements ActionListener {
+public class ClickOperand implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
-                //реализовать самому
+
+
         String command = e.getActionCommand();
 
         //взять значение из набираемой строки, добавить туда введенные символы, записать обратно.
@@ -14,6 +16,11 @@ public class ClickCommand implements ActionListener {
         exp.append(command);
         ResultCommand.setExpression(exp);
 
-        CalcWindow.display.setText(CalcWindow.display.getText() + command);
+        String oldValue = CalcWindow.display.getText();
+        if(oldValue != null && oldValue.equals("0")|| oldValue != null && oldValue.equals("неверное выражение")){
+            CalcWindow.display.setText(command);
+        }else{
+            CalcWindow.display.setText(oldValue + command);
+        }
     }
 }

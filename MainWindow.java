@@ -1,4 +1,6 @@
-package com.barracuda.tasks.politeh.practice_04_12_2020.calc.gui;
+package com.barracuda.tasks.politeh.practice_04_12_2020.calc;
+
+import com.barracuda.tasks.politeh.practice_04_12_2020.calc.calculator.gui.ClickReaction;
 
 import javax.swing.*;
 import java.awt.*;
